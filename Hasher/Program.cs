@@ -61,7 +61,3 @@ void SHA1Hash(FileStream file)
     builder.AppendLine($"SHA1: {sha1}");
     builder.AppendLine($"SHA1 Base64: {base64}\n");
 }
-
-
-
-
