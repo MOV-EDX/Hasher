@@ -22,7 +22,6 @@ void EnumerateAndHashFiles(string path) {
     else
     {
         using FileStream file = File.Open(path, FileMode.Open, FileAccess.Read);
-        file.Position = 0;
 
         builder.AppendLine($"Path: {file.Name}\n");
 
@@ -34,6 +33,7 @@ void EnumerateAndHashFiles(string path) {
 
 void SHA256Hash(FileStream file)
 {
+    file.Position = 0;
     var hash = SHA256.HashData(file);
     var sha256 = Convert.ToHexString(hash);
     var base64 = Convert.ToBase64String(hash);
