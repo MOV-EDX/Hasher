@@ -2,7 +2,7 @@
   "profiles": {
     "Hasher": {
       "commandName": "Project",
-      "commandLineArgs": "\"C:\\Users\\bsodt\\Downloads\\SysnativeFileCollectionApp - sqx help\""
+      "commandLineArgs": "-source \"C:\\Users\\bsodt\\Downloads\\Source_Files\" -log \"C:\\Users\\bsodt\\Downloads\\Log.txt\""
     }
   }
 }

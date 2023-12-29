@@ -8,6 +8,7 @@ var builder = new StringBuilder();
 // CBS log parser from SFG courtesy of Tekno Venus
 var parser = new LogParser();
 var matches = new List<LogMatch>();
+var corruptedFiles = 0;
 
 var sIndex = Array.FindIndex(args, arg => arg.Equals("-source"));
 var lIndex = Array.FindIndex(args, arg => arg.Equals("-log"));
@@ -22,7 +23,16 @@ if (lIndex > -1)
 }
 
 EnumerateAndHashFiles(sPath, matches);
-Console.WriteLine(builder.ToString());
+
+if (corruptedFiles <= 0)
+{
+    Console.WriteLine("No corrupt files were found.");
+}
+else
+{
+    Console.WriteLine(builder.ToString());
+}
+
 Console.ReadKey();
 
 void EnumerateAndHashFiles(string path, IList<LogMatch> matches) {
@@ -102,13 +112,13 @@ void SHA256HashAndVerify(FileStream file, IList<LogMatch> matches)
 {
     file.Position = 0;
     var filePath = file.Name.Split(@"\");
-    var fileName = filePath[filePath.Length - 1];
+    var payloadFile = $@"{filePath[filePath.Length - 2]}\{filePath[filePath.Length - 1]}";
 
     var hash = SHA256.HashData(file);
     var sha256 = Convert.ToHexString(hash);
     var base64 = Convert.ToBase64String(hash);
 
-    var hashesToVerify = matches.Where(lm => lm.File.Name.EndsWith(fileName));
+    var hashesToVerify = matches.Where(lm => lm.File.Filepath.Equals(payloadFile, StringComparison.InvariantCultureIgnoreCase));
 
     foreach (var verification in hashesToVerify)
     {
@@ -118,7 +128,9 @@ void SHA256HashAndVerify(FileStream file, IList<LogMatch> matches)
 
             builder.AppendLine($"Component: {verification.File.Filepath}");
             builder.AppendLine($"Expected Hash: {verification.File.ExpectedHash}");
-            builder.AppendLine($"Actual Hash: {actualHash}");
+            builder.AppendLine($"Actual Hash: {actualHash}\n");
+
+            corruptedFiles++;
         }
     }
 }
