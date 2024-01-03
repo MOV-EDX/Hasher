@@ -26,7 +26,8 @@ EnumerateAndHashFiles(sPath, matches);
 
 if (corruptedFiles <= 0)
 {
-    Console.WriteLine("No corrupt files were found.");
+    var message = lIndex < 0 ? builder.ToString() : "No corrupt files were found.";
+    Console.WriteLine(message);
 }
 else
 {
